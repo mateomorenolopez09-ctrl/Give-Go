@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Give&Go - Manual Técnico y Arquitectura de Software</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+              800: '#991b1b',
+              900: '#7f1d1d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Panzoom CDN para permitir arrastrar y hacer zoom a los diagramas -->
+  <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
+
+  <!-- Mermaid.js para diagramas interactivos -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      themeVariables: {
+        primaryColor: '#fee2e2',
+        primaryTextColor: '#991b1b',
+        primaryBorderColor: '#ef4444',
+        lineColor: '#475569',
+        secondaryColor: '#f1f5f9',
+        tertiaryColor: '#ffffff',
+        fontSize: '15px',
+        fontFamily: 'Plus Jakarta Sans, sans-serif'
+      }
+    });
+  </script>
+
+  <!-- Google Fonts & Prism Code Highlighting -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #F8FAFC;
+      color: #1E293B;
+    }
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    @media print {
+      .no-print { display: none !important; }
+      body { background-color: #FFFFFF; font-size: 11pt; }
+      .page-break { page-break-before: always; }
+      .shadow-sm, .shadow-md, .shadow-xl { box-shadow: none !important; }
+      nav, aside { display: none !important; }
+      main { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+    .diagram-container {
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+      min-height: 380px;
+      touch-action: none;
+    }
+    .diagram-container:active {
+      cursor: grabbing;
+    }
+    .diagram-viewport {
+      display: inline-block;
+      min-width: 100%;
+      transform-origin: 0 0;
+      transition: transform 0.05s ease-out;
+    }
+    .diagram-viewport svg {
+      max-width: none !important;
+      height: auto !important;
+      min-width: 800px;
+    }
+    .badge-get { background-color: #0284c7; color: white; }
+    .badge-post { background-color: #16a34a; color: white; }
+    .badge-put { background-color: #d97706; color: white; }
+    .badge-delete { background-color: #dc2626; color: white; }
+  </style>
+</head>
+<body class="selection:bg-red-500 selection:text-white">
+
+  <!-- TOP BAR -->
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-red-500 flex items-center justify-center text-white font-black text-xl shadow-md shadow-red-200">
+          G&G
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Give&Go - Manual Maestro de Arquitectura</h1>
+          <p class="text-xs text-slate-500 font-medium">Documentación Técnica Exhaustiva • Diagramas con Zoom • Catálogo de APIs REST</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <button onclick="window.print()" class="inline-flex items-center px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-all">
+          <svg class="w-4 h-4 mr-1.5 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          Exportar / Imprimir PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL CON SIDEBAR Y CONTENIDO -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
+    
+    <!-- SIDEBAR DE NAVEGACIÓN RÁPIDA -->
+    <aside class="w-full lg:w-72 flex-shrink-0 no-print">
+      <div class="sticky top-24 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tabla de Contenidos</h2>
+        <nav class="space-y-1 text-sm font-medium">
+          <a href="#vision-general" class="flex items-center px-3 py-2 text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition">
+            <span class="w-2 h-2 rounded-full bg-red-500 mr-3"></span>1. Visión General y Roles
+          </a>
+          <a href="#como-iniciar" class="flex items-center px-3 py-2 text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition">
+            <span class="w-2 h-2 rounded-full bg-orange-500 mr-3"></span>2. Guía de Ejecución y Variables (.env)
+          </a>
+          <a href="#flujo-comunicacion" class="flex items-center px-3 py-2 text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition">
+            <span class="w-2 h-2 rounded-full bg-yellow-500 mr-3"></span>3. Flujo y Diagrama con Zoom
+          </a>
+          <a href="#catalogo-apis" class="flex items-center px-3 py-2 text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition">
+            <span class="w-2 h-2 rounded-full bg-teal-500 mr-3"></span>4. Catálogo de APIs REST (GET, POST...)
+          </a>
+          <a href="#database" class="flex items-center px-3 py-2 text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition">
+            <span class="w-2 h-2 rounded-full bg-cyan-500 mr-3"></span>5. Módulo /database (MySQL)
+          </a>
+          <a href="#backend" class="flex items-center px-3 py-2 text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 mr-3"></span>6. Módulo /backend (Express & TS)
+          </a>
+          <a href="#frontend-web" class="flex items-center px-3 py-2 text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition">
+            <span class="w-2 h-2 rounded-full bg-blue-500 mr-3"></span>7. Módulo /frontend_web (React)
+          </a>
+          <a href="#frontend-mobile" class="flex items-center px-3 py-2 text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition">
+            <span class="w-2 h-2 rounded-full bg-indigo-500 mr-3"></span>8. Módulo /frontend_mobile (Expo)
+          </a>
+          <a href="#caso-donacion" class="flex items-center px-3 py-2 text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition">
+            <span class="w-2 h-2 rounded-full bg-rose-500 mr-3"></span>9. Caso Real: Ciclo de una Donación
+          </a>
+          <a href="#seguridad-auth" class="flex items-center px-3 py-2 text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition">
+            <span class="w-2 h-2 rounded-full bg-purple-500 mr-3"></span>10. Seguridad y Matriz RBAC
+          </a>
+        </nav>
+
+        <div class="pt-4 border-t border-slate-100">
+          <div class="p-3 bg-slate-50 rounded-xl text-xs text-slate-500">
+            <strong>Stack Tecnológico:</strong>
+            <div class="mt-2 flex flex-wrap gap-1">
+              <span class="px-2 py-0.5 bg-cyan-100 text-cyan-800 rounded font-semibold">MySQL 8 / XAMPP</span>
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-semibold">Node.js + Express</span>
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded font-semibold">React + Vite</span>
+              <span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded font-semibold">React Native (Expo)</span>
+              <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-semibold">TypeScript</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL DE CONTENIDO -->
+    <main class="w-full lg:flex-1 space-y-12">
+
+      <!-- HERO / BANNER -->
+      <section id="vision-general" class="bg-gradient-to-br from-slate-900 via-slate-800 to-red-950 text-white rounded-3xl p-8 lg:p-12 shadow-xl relative overflow-hidden">
+        <div class="relative z-10 max-w-3xl space-y-4">
+          <span class="inline-flex items-center px-3 py-1 text-xs font-bold tracking-widest text-red-300 uppercase bg-red-900/60 rounded-full border border-red-500/30">
+            Arquitectura de Software v2.0
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
+            Plataforma Solidaria <span class="text-red-400">Give&Go</span>
+          </h2>
+          <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+            Ecosistema integral para la gestión de convocatorias solidarias, donaciones monetarias/especie, canalización de ayudas a beneficiarios y auditoría con trazabilidad total.
+          </p>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6">
+            <div class="bg-white/10 backdrop-blur rounded-2xl p-4 border border-white/10">
+              <div class="text-2xl font-black text-white">4 Roles</div>
+              <div class="text-xs text-slate-300">Admin, Org, Voluntario, Beneficiario</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur rounded-2xl p-4 border border-white/10">
+              <div class="text-2xl font-black text-white">2 Clientes</div>
+              <div class="text-xs text-slate-300">Web (SPA) + Móvil (Expo)</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur rounded-2xl p-4 border border-white/10">
+              <div class="text-2xl font-black text-white">+25 Endpoints</div>
+              <div class="text-xs text-slate-300">GET, POST, PUT, DELETE con JWT</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur rounded-2xl p-4 border border-white/10">
+              <div class="text-2xl font-black text-white">1 BD Relacional</div>
+              <div class="text-xs text-slate-300">MySQL / MariaDB + Triggers</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 2: CÓMO ARRANCAR EL PROYECTO -->
+      <section id="como-iniciar" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+          <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold">2</div>
+          <h3 class="text-2xl font-bold text-slate-900">Guía de Puesta en Marcha (Cómo Arrancar Todo)</h3>
+        </div>
+
+        <p class="text-slate-600 leading-relaxed">
+          El proyecto consta de 3 capas independientes que se ejecutan simultáneamente en tu entorno local o servidor:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- PASO 1: BASE DE DATOS -->
+          <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 flex flex-col justify-between">
+            <div>
+              <span class="inline-block px-2 py-1 text-xs font-bold text-cyan-700 bg-cyan-100 rounded-md mb-2">Paso 1: MySQL (XAMPP)</span>
+              <h4 class="font-bold text-slate-900 mb-2">1. Base de Datos</h4>
+              <ol class="text-xs text-slate-600 space-y-2 list-decimal list-inside">
+                <li>Abre <strong>XAMPP Control Panel</strong> e inicia <strong>Apache</strong> y <strong>MySQL</strong>.</li>
+                <li>Ingresa a <code class="bg-slate-200 px-1 py-0.5 rounded text-slate-800">http://localhost/phpmyadmin</code></li>
+                <li>Crea la base de datos: <code class="bg-slate-200 px-1 py-0.5 rounded text-slate-800 font-semibold">giveandgo_db</code></li>
+                <li>Importa el archivo: <code class="bg-slate-200 px-1 py-0.5 rounded text-slate-800">database/giveandgo_full_xampp.sql</code></li>
+              </ol>
+            </div>
+            <div class="mt-4 p-2.5 bg-white rounded-lg border border-slate-200 text-xs text-slate-500 font-mono">
+              Puerto: 3306 | User: root
+            </div>
+          </div>
+
+          <!-- PASO 2: BACKEND -->
+          <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 flex flex-col justify-between">
+            <div>
+              <span class="inline-block px-2 py-1 text-xs font-bold text-emerald-700 bg-emerald-100 rounded-md mb-2">Paso 2: Servidor API</span>
+              <h4 class="font-bold text-slate-900 mb-2">2. Backend Node/Express</h4>
+              <p class="text-xs text-slate-600 mb-3">En una terminal en la raíz del proyecto:</p>
+              <pre class="bg-slate-900 text-emerald-400 p-3 rounded-xl text-xs overflow-x-auto"><code>cd backend
+npm install
+npm run dev</code></pre>
+            </div>
+            <div class="mt-4 p-2.5 bg-white rounded-lg border border-slate-200 text-xs text-slate-500 font-mono">
+              URL: http://localhost:5000/api
+            </div>
+          </div>
+
+          <!-- PASO 3: FRONTENDS -->
+          <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 flex flex-col justify-between">
+            <div>
+              <span class="inline-block px-2 py-1 text-xs font-bold text-blue-700 bg-blue-100 rounded-md mb-2">Paso 3: Clientes</span>
+              <h4 class="font-bold text-slate-900 mb-2">3. Web y Móvil</h4>
+              <p class="text-xs text-slate-600 mb-1 font-semibold">Frontend Web:</p>
+              <pre class="bg-slate-900 text-blue-300 p-2.5 rounded-lg text-xs mb-2"><code>cd frontend_web
+npm run dev</code></pre>
+              <p class="text-xs text-slate-600 mb-1 font-semibold">Frontend Móvil (Expo):</p>
+              <pre class="bg-slate-900 text-indigo-300 p-2.5 rounded-lg text-xs"><code>cd frontend_mobile
+npx expo start</code></pre>
+            </div>
+            <div class="mt-4 p-2.5 bg-white rounded-lg border border-slate-200 text-xs text-slate-500 font-mono">
+              Web: :3000 o :5173 | Móvil: Expo Go
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-SECCIÓN: ARCHIVO DE VARIABLES DE ENTORNO (.env) -->
+        <div class="mt-8 pt-6 border-t border-slate-100 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h4 class="text-base font-bold text-slate-900 flex items-center">
+                <span class="w-3 h-3 rounded-full bg-amber-500 mr-2"></span>
+                Archivo de Configuración y Variables de Entorno (<code class="text-xs bg-slate-100 px-2 py-0.5 rounded text-amber-700 font-mono">.env</code>)
+              </h4>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Crea un archivo llamado <code class="font-mono text-slate-700">.env</code> en la raíz del proyecto para enlazar la base de datos MySQL de XAMPP, el servidor Express y el cliente Web:
+              </p>
+            </div>
+            <button onclick="navigator.clipboard.writeText(`# Configuración del Servidor Full-Stack (Backend + Web)\nPORT=3000\nNODE_ENV=development\nJWT_SECRET=giveandgo_super_secret_jwt_key_2025\n\n# Conexión a la Base de Datos de XAMPP (MySQL)\nDB_HOST=localhost\nDB_PORT=3306\nDB_USER=root\nDB_PASSWORD=\nDB_NAME=giveandgo_v2\n\n# URL de la API\nVITE_API_URL=http://localhost:3000/api`); alert('¡Contenido del .env copiado al portapapeles!');" class="inline-flex items-center px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold shadow-sm transition">
+              <svg class="w-3.5 h-3.5 mr-1.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              Copiar .env
+            </button>
+          </div>
+
+          <div class="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-inner">
+            <div class="bg-slate-900/80 px-4 py-2 border-b border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+              <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>.env</span>
+              <span class="text-[11px] text-slate-500">Configuración Local & Producción</span>
+            </div>
+            <pre class="p-4 text-xs font-mono text-slate-200 overflow-x-auto leading-relaxed"><code class="language-bash"><span class="text-slate-500"># Configuración del Servidor Full-Stack (Backend + Web)</span>
+<span class="text-cyan-400">PORT</span>=<span class="text-amber-300">3000</span>
+<span class="text-cyan-400">NODE_ENV</span>=<span class="text-emerald-300">development</span>
+<span class="text-cyan-400">JWT_SECRET</span>=<span class="text-rose-300">giveandgo_super_secret_jwt_key_2025</span>
+
+<span class="text-slate-500"># Conexión a la Base de Datos de XAMPP (MySQL)</span>
+<span class="text-cyan-400">DB_HOST</span>=<span class="text-emerald-300">localhost</span>
+<span class="text-cyan-400">DB_PORT</span>=<span class="text-amber-300">3306</span>
+<span class="text-cyan-400">DB_USER</span>=<span class="text-emerald-300">root</span>
+<span class="text-cyan-400">DB_PASSWORD</span>=
+<span class="text-cyan-400">DB_NAME</span>=<span class="text-emerald-300">giveandgo_v2</span>
+
+<span class="text-slate-500"># URL de la API</span>
+<span class="text-cyan-400">VITE_API_URL</span>=<span class="text-blue-300">http://localhost:3000/api</span></code></pre>
+          </div>
+
+          <!-- TABLA EXPLICATIVA DE CADA VARIABLE -->
+          <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider">
+                <tr>
+                  <th class="p-3">Variable de Entorno</th>
+                  <th class="p-3">Valor por Defecto</th>
+                  <th class="p-3">Descripción / Propósito</th>
+                  <th class="p-3">Capa</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 font-medium text-slate-600">
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3 font-mono font-bold text-slate-900">PORT</td>
+                  <td class="p-3 font-mono text-amber-600">3000</td>
+                  <td class="p-3">Puerto de red en el que escucha el servidor Node.js/Express.</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Backend</span></td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3 font-mono font-bold text-slate-900">NODE_ENV</td>
+                  <td class="p-3 font-mono text-emerald-600">development</td>
+                  <td class="p-3">Modo de ejecución del runtime. En <code>development</code> habilita recarga en caliente e información detallada de errores.</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Backend</span></td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3 font-mono font-bold text-slate-900">JWT_SECRET</td>
+                  <td class="p-3 font-mono text-rose-600">giveandgo_super_secret...</td>
+                  <td class="p-3">Clave secreta utilizada para firmar criptográficamente y validar los tokens JWT en cada petición HTTP protegida.</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-semibold">Seguridad</span></td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3 font-mono font-bold text-slate-900">DB_HOST</td>
+                  <td class="p-3 font-mono text-cyan-600">localhost</td>
+                  <td class="p-3">Dirección del host del motor MySQL / MariaDB (en local se usa <code>localhost</code> o <code>127.0.0.1</code>).</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 font-semibold">Base de Datos</span></td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3 font-mono font-bold text-slate-900">DB_PORT</td>
+                  <td class="p-3 font-mono text-amber-600">3306</td>
+                  <td class="p-3">Puerto estándar de conexión TCP/IP para MySQL en XAMPP.</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 font-semibold">Base de Datos</span></td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3 font-mono font-bold text-slate-900">DB_USER</td>
+                  <td class="p-3 font-mono text-slate-900 font-bold">root</td>
+                  <td class="p-3">Nombre de usuario con permisos de acceso y manipulación en la base de datos MySQL.</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 font-semibold">Base de Datos</span></td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3 font-mono font-bold text-slate-900">DB_PASSWORD</td>
+                  <td class="p-3 font-mono text-slate-400">(vacío)</td>
+                  <td class="p-3">Contraseña de acceso para el usuario root (por defecto en blanco en XAMPP).</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 font-semibold">Base de Datos</span></td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3 font-mono font-bold text-slate-900">DB_NAME</td>
+                  <td class="p-3 font-mono text-cyan-600">giveandgo_v2</td>
+                  <td class="p-3">Nombre del esquema relacional creado en phpMyAdmin donde se importan las tablas de Give&Go.</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 font-semibold">Base de Datos</span></td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3 font-mono font-bold text-slate-900">VITE_API_URL</td>
+                  <td class="p-3 font-mono text-blue-600">http://localhost:3000/api</td>
+                  <td class="p-3">Endpoint base consumido por el cliente Web en React para enviar las peticiones HTTP REST.</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-semibold">Frontend Web</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3: ARQUITECTURA Y FLUJO GLOBAL DE CONEXIÓN (CON ZOOM INTERACTIVO) -->
+      <section id="flujo-comunicacion" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+          <div class="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-600 flex items-center justify-center font-bold">3</div>
+          <div>
+            <h3 class="text-2xl font-bold text-slate-900">¿Cómo se Conecta Todo el Sistema? (Diagrama Interactivo con Zoom)</h3>
+            <p class="text-xs text-slate-500">Usa los botones o la rueda del ratón / arrastre para explorar cada detalle del diagrama sin restricciones de tamaño.</p>
+          </div>
+        </div>
+
+        <p class="text-slate-600 leading-relaxed text-sm">
+          El sistema opera bajo el patrón arquitectónico <strong>Cliente - API REST - Capa de Persistencia</strong>. Las aplicaciones Web y Móvil consumen el mismo backend central mediante peticiones HTTP estructuradas y protegidas por JSON Web Tokens (JWT).
+        </p>
+
+        <!-- VISOR DE DIAGRAMA INTERACTIVO CON ZOOM 1 -->
+        <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4 shadow-inner space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-800 text-white">
+            <span class="text-xs font-bold uppercase tracking-wider text-red-400 flex items-center">
+              <span class="w-2 h-2 rounded-full bg-red-500 mr-2 animate-pulse"></span> Diagrama 1: Flujo Global de Arquitectura Give&Go
+            </span>
+            <div class="flex items-center space-x-1">
+              <button onclick="zoomIn('diagram1')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-bold border border-slate-700 flex items-center">
+                🔍 + Zoom In
+              </button>
+              <button onclick="zoomOut('diagram1')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-bold border border-slate-700 flex items-center">
+                🔍 - Zoom Out
+              </button>
+              <button onclick="resetZoom('diagram1')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-bold border border-slate-700 flex items-center">
+                ↺ Reset
+              </button>
+            </div>
+          </div>
+
+          <div id="container-diagram1" class="diagram-container bg-slate-950/60 rounded-xl p-4 flex items-center justify-center">
+            <div id="viewport-diagram1" class="diagram-viewport">
+              <div class="mermaid text-center">
+                graph TD
+                  subgraph CLIENTES["📱 CAPA DE CLIENTES (FRONTEND)"]
+                    Web["🖥️ FRONTEND WEB<br/>React 18 + Vite + Tailwind CSS<br/>• Axios Client + Interceptor JWT<br/>• React Router DOM<br/>• React Context API (AuthContext)"]
+                    Mobile["📱 FRONTEND MÓVIL<br/>React Native 0.74 + Expo 51<br/>• Axios Client + Bearer Token<br/>• React Navigation v6 (Tabs & Stacks)<br/>• Lucide Vector Icons<br/>• Feature-Driven Architecture"]
+                  end
+
+                  subgraph GATEWAY["🔀 API GATEWAY / BACKEND (EXPRESS + TYPESCRIPT)"]
+                    Router["🛣️ ENRUTADORES (/api/*)<br/>• /api/users (Autenticación & Perfiles)<br/>• /api/events (Jornadas & Cupos)<br/>• /api/donations (Monetarias & Especie)<br/>• /api/requests (Ayuda a Beneficiarios)<br/>• /api/verifications & /api/audit"]
+                    
+                    subgraph MIDDLEWARES["🛡️ SEGURIDAD Y VALIDACIÓN"]
+                      AuthMW["🔒 authMiddleware<br/>Verifica JWT con clave secreta"]
+                      RoleMW["👑 roleMiddleware<br/>RBAC: admin, voluntario, org, beneficiario"]
+                      ValMW["📋 express-validator<br/>Valida formato, correos, tipos y campos"]
+                    end
+
+                    subgraph LOGICA["⚙️ CONTROLADORES & REGLAS DE NEGOCIO"]
+                      UCtrl["userController.ts"]
+                      ECtrl["eventController.ts"]
+                      DCtrl["donationController.ts"]
+                      RCtrl["requestController.ts"]
+                    end
+
+                    subgraph MODELOS["📦 CAPA DE ACCESO A DATOS (DATA ACCESS LAYER)"]
+                      UMod["usuarioModel.ts (SQL Parametrizado)"]
+                      EMod["eventoModel.ts (SQL & Transacciones)"]
+                      DMod["donacionModel.ts (Polimorfismo SQL)"]
+                      RMod["solicitudModel.ts (SQL Beneficiarios)"]
+                    end
+                  end
+
+                  subgraph PERSISTENCIA["🗄️ CAPA DE PERSISTENCIA (MYSQL / XAMPP)"]
+                    Pool["🏊‍♂️ POOL DE CONEXIONES<br/>mysql2/promise (Max: 10 conexiones)<br/>Reintentos y Fallback a Memoria"]
+                    
+                    subgraph TABLAS["TABLAS RELACIONALES (giveandgo_db)"]
+                      T1["USUARIOS & ORGANIZACIONES"]
+                      T2["EVENTOS & POSTULACIONES_EVENTOS"]
+                      T3["DONACIONES, DONACIONES_MONETARIAS, DONACIONES_OBJETOS"]
+                      T4["SOLICITUDES_AYUDA & AUDITORIA"]
+                    end
+
+                    Triggers["⚡ TRIGGERS DE BASE DE DATOS<br/>• Actualización automática de cupos disponibles<br/>• Auditoría automática de cambios de estado"]
+                  end
+
+                  Web -->|1. Petición HTTP / JSON + Bearer Token| Router
+                  Mobile -->|1. Petición HTTP / JSON + Bearer Token| Router
+                  Router --> AuthMW
+                  AuthMW --> RoleMW
+                  RoleMW --> ValMW
+                  ValMW --> UCtrl & ECtrl & DCtrl & RCtrl
+                  UCtrl --> UMod
+                  ECtrl --> EMod
+                  DCtrl --> DMod
+                  RCtrl --> RMod
+                  UMod & EMod & DMod & RMod --> Pool
+                  Pool --> T1 & T2 & T3 & T4
+                  T2 --- Triggers
+                  T4 --- Triggers
+              </div>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 text-center italic">Tip: Haz clic y arrastra dentro del recuadro para mover el diagrama, o usa los botones de Zoom.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+          <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-200">
+            <h4 class="font-bold text-emerald-900 text-sm mb-2 flex items-center">
+              <span class="w-2 h-2 rounded-full bg-emerald-600 mr-2"></span> Conexión Frontend ➔ Backend
+            </h4>
+            <p class="text-xs text-emerald-800 leading-relaxed">
+              Tanto la web como el móvil utilizan una instancia de <code>apiClient</code> basada en Axios.
+              Los interceptores inyectan automáticamente en la cabecera <code>Authorization: Bearer &lt;JWT&gt;</code> el token guardado en <code>localStorage</code> (web) o <code>AsyncStorage</code> (móvil).
+            </p>
+          </div>
+
+          <div class="p-4 bg-cyan-50 rounded-2xl border border-cyan-200">
+            <h4 class="font-bold text-cyan-900 text-sm mb-2 flex items-center">
+              <span class="w-2 h-2 rounded-full bg-cyan-600 mr-2"></span> Conexión Backend ➔ Base de Datos
+            </h4>
+            <p class="text-xs text-cyan-800 leading-relaxed">
+              El backend utiliza <code>mysql2/promise</code> con un <strong>Pool de Conexiones</strong> parametrizado en <code>backend/src/config/database.ts</code>. Si MySQL no está disponible, el sistema conmuta automáticamente a almacenamiento en memoria resiliente (mock) para evitar caídas del servicio.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 4: CATÁLOGO COMPLETO DE APIS REST (GET, POST, PUT, DELETE) -->
+      <section id="catalogo-apis" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+          <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center font-bold">4</div>
+          <div>
+            <h3 class="text-2xl font-bold text-slate-900">Catálogo Completo de Endpoints y APIs REST</h3>
+            <p class="text-xs text-slate-500">Listado de métodos HTTP (GET, POST, PUT, DELETE), rutas, permisos y payloads</p>
+          </div>
+        </div>
+
+        <p class="text-slate-600 text-sm leading-relaxed">
+          A continuación se detallan todas las APIs expuestas por el servidor backend en <code class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-mono">http://localhost:5000/api</code>:
+        </p>
+
+        <!-- SUB-SECCIÓN: USUARIOS Y AUTENTICACIÓN -->
+        <div class="space-y-3">
+          <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center text-red-600">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-500 mr-2"></span> Módulo de Usuarios y Autenticación (/api/users)
+          </h4>
+          <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider">
+                <tr>
+                  <th class="p-3">Método</th>
+                  <th class="p-3">Endpoint</th>
+                  <th class="p-3">Descripción</th>
+                  <th class="p-3">Autenticación / Rol</th>
+                  <th class="p-3">Payload (Ejemplo)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 font-medium text-slate-600">
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-post">POST</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/users/login</td>
+                  <td class="p-3">Inicia sesión y genera token JWT</td>
+                  <td class="p-3 text-slate-500">Público</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">{ "correo": "...", "password": "..." }</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-post">POST</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/users/register</td>
+                  <td class="p-3">Registra usuarios (Voluntario, Beneficiario, Org)</td>
+                  <td class="p-3 text-slate-500">Público</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">{ "rol", "nombre1", "apellido1", "correo", "password", ... }</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-get">GET</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/users/profile</td>
+                  <td class="p-3">Obtiene el perfil del usuario autenticado</td>
+                  <td class="p-3 text-emerald-600 font-bold">Bearer JWT</td>
+                  <td class="p-3 text-slate-400">N/A</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-put">PUT</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/users/profile</td>
+                  <td class="p-3">Actualiza datos personales, teléfono, barrio</td>
+                  <td class="p-3 text-emerald-600 font-bold">Bearer JWT</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">{ "telefono", "barrio", "localidad", ... }</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-get">GET</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/users</td>
+                  <td class="p-3">Lista todos los usuarios (Gestión Admin)</td>
+                  <td class="p-3 text-purple-600 font-bold">Admin</td>
+                  <td class="p-3 text-slate-400">N/A</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUB-SECCIÓN: JORNADAS Y EVENTOS -->
+        <div class="space-y-3 pt-4">
+          <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center text-blue-600">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-2"></span> Módulo de Convocatorias y Eventos (/api/events)
+          </h4>
+          <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider">
+                <tr>
+                  <th class="p-3">Método</th>
+                  <th class="p-3">Endpoint</th>
+                  <th class="p-3">Descripción</th>
+                  <th class="p-3">Autenticación / Rol</th>
+                  <th class="p-3">Payload (Ejemplo)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 font-medium text-slate-600">
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-get">GET</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/events</td>
+                  <td class="p-3">Lista todas las jornadas activas con cupos</td>
+                  <td class="p-3 text-slate-500">Público</td>
+                  <td class="p-3 text-slate-400">Filtros por query params</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-get">GET</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/events/:id</td>
+                  <td class="p-3">Detalle específico de una jornada</td>
+                  <td class="p-3 text-slate-500">Público</td>
+                  <td class="p-3 text-slate-400">N/A</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-post">POST</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/events</td>
+                  <td class="p-3">Crea y publica una nueva jornada solidaria</td>
+                  <td class="p-3 text-emerald-600 font-bold">Admin / Organización</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">{ "titulo", "descripcion", "fecha", "cupo_maximo", ... }</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-post">POST</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/events/:id/register</td>
+                  <td class="p-3">Inscribe a un voluntario o beneficiario</td>
+                  <td class="p-3 text-emerald-600 font-bold">Bearer JWT</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">{ "rol_participacion": "voluntario" }</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-post">POST</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/events/:id/unregister</td>
+                  <td class="p-3">Cancela la inscripción liberando el cupo</td>
+                  <td class="p-3 text-emerald-600 font-bold">Bearer JWT</td>
+                  <td class="p-3 text-slate-400">N/A</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-delete">DELETE</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/events/:id</td>
+                  <td class="p-3">Elimina o cancela una jornada</td>
+                  <td class="p-3 text-purple-600 font-bold">Admin / Creador</td>
+                  <td class="p-3 text-slate-400">N/A</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUB-SECCIÓN: DONACIONES -->
+        <div class="space-y-3 pt-4">
+          <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center text-emerald-600">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-2"></span> Módulo de Donaciones Solidarias (/api/donations)
+          </h4>
+          <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider">
+                <tr>
+                  <th class="p-3">Método</th>
+                  <th class="p-3">Endpoint</th>
+                  <th class="p-3">Descripción</th>
+                  <th class="p-3">Autenticación / Rol</th>
+                  <th class="p-3">Payload (Ejemplo)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 font-medium text-slate-600">
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-get">GET</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/donations</td>
+                  <td class="p-3">Lista pública de donaciones realizadas</td>
+                  <td class="p-3 text-slate-500">Público</td>
+                  <td class="p-3 text-slate-400">N/A</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-get">GET</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/donations/user/me</td>
+                  <td class="p-3">Historial de donaciones del usuario en sesión</td>
+                  <td class="p-3 text-emerald-600 font-bold">Bearer JWT</td>
+                  <td class="p-3 text-slate-400">N/A</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-post">POST</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/donations</td>
+                  <td class="p-3">Registra donación (Monetaria o en Especie)</td>
+                  <td class="p-3 text-emerald-600 font-bold">Bearer JWT</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">{ "tipo_donacion": "monetaria", "monto": 50000, ... }</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-post">POST</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/donations/monetary</td>
+                  <td class="p-3">Ruta directa para aporte de fondos con pasarela</td>
+                  <td class="p-3 text-emerald-600 font-bold">Bearer JWT</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">{ "monto", "pasarela_pago", "referencia_transaccion" }</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-post">POST</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/donations/object</td>
+                  <td class="p-3">Ruta directa para donación de alimentos/ropa</td>
+                  <td class="p-3 text-emerald-600 font-bold">Bearer JWT</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">{ "categoria_id", "descripcion", "cantidad" }</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUB-SECCIÓN: SOLICITUDES DE AYUDA -->
+        <div class="space-y-3 pt-4">
+          <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center text-indigo-600">
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 mr-2"></span> Módulo de Solicitudes de Beneficiarios (/api/requests)
+          </h4>
+          <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider">
+                <tr>
+                  <th class="p-3">Método</th>
+                  <th class="p-3">Endpoint</th>
+                  <th class="p-3">Descripción</th>
+                  <th class="p-3">Autenticación / Rol</th>
+                  <th class="p-3">Payload (Ejemplo)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 font-medium text-slate-600">
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-get">GET</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/requests</td>
+                  <td class="p-3">Lista general de peticiones de asistencia</td>
+                  <td class="p-3 text-slate-500">Público / Org</td>
+                  <td class="p-3 text-slate-400">N/A</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-get">GET</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/requests/me</td>
+                  <td class="p-3">Solicitudes creadas por el beneficiario en sesión</td>
+                  <td class="p-3 text-emerald-600 font-bold">Bearer JWT</td>
+                  <td class="p-3 text-slate-400">N/A</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-post">POST</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/requests</td>
+                  <td class="p-3">Crea una nueva solicitud con nivel de urgencia</td>
+                  <td class="p-3 text-emerald-600 font-bold">Beneficiario</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">{ "titulo", "descripcion", "nivel_urgencia", "localidad", ... }</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3"><span class="px-2 py-0.5 rounded font-bold badge-put">PUT</span></td>
+                  <td class="p-3 font-mono font-bold text-slate-900">/api/requests/:id</td>
+                  <td class="p-3">Actualiza estado (aprobada, entregada, rechazada)</td>
+                  <td class="p-3 text-emerald-600 font-bold">Admin / Organización</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">{ "estado": "aprobada" }</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 5: BASE DE DATOS Y CARPETAS -->
+      <section id="database" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+          <div class="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-600 flex items-center justify-center font-bold">5</div>
+          <div>
+            <h3 class="text-2xl font-bold text-slate-900">Estructura del Directorio /database</h3>
+            <p class="text-xs text-slate-500">Esquema relacional, migraciones, semillas y triggers</p>
+          </div>
+        </div>
+
+        <!-- ÁRBOL DE CARPETAS DATABASE -->
+        <div class="bg-slate-900 text-slate-200 p-5 rounded-2xl font-mono text-xs overflow-x-auto">
+<pre class="text-slate-300"><span class="text-cyan-400 font-bold">/database</span>
+├── <span class="text-amber-400">giveandgo_full_xampp.sql</span>   <span class="text-slate-500"># Dump maestro todo-en-uno listo para importar en phpMyAdmin</span>
+├── <span class="text-cyan-300">README.md</span>                  <span class="text-slate-500"># Instrucciones de configuración y modelo relacional</span>
+├── <span class="text-cyan-400 font-bold">schema/</span>                    <span class="text-slate-500"># Definiciones DDL modulares de tablas</span>
+│   ├── <span class="text-slate-300">01_usuarios.sql</span>        <span class="text-slate-500"># Tablas: USUARIOS, ORGANIZACIONES, VERIFICACIONES</span>
+│   ├── <span class="text-slate-300">02_eventos.sql</span>         <span class="text-slate-500"># Tablas: EVENTOS, CATEGORIAS, POSTULACIONES_EVENTOS</span>
+│   ├── <span class="text-slate-300">03_donaciones.sql</span>      <span class="text-slate-500"># Tablas: DONACIONES, DONACIONES_MONETARIAS, DONACIONES_OBJETOS</span>
+│   └── <span class="text-slate-300">04_solicitudes.sql</span>     <span class="text-slate-500"># Tablas: SOLICITUDES_AYUDA, AUDITORIA</span>
+├── <span class="text-cyan-400 font-bold">migrations/</span>                <span class="text-slate-500"># Scripts de migración y evolución del esquema</span>
+└── <span class="text-cyan-400 font-bold">seeds/</span>                     <span class="text-slate-500"># Datos iniciales para pruebas y desarrollo</span>
+    └── <span class="text-slate-300">01_initial_data.sql</span>    <span class="text-slate-500"># Categorías iniciales, organizaciones y usuarios demo</span></pre>
+        </div>
+
+        <h4 class="font-bold text-slate-800 text-base">Tablas Principales y su Propósito:</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+            <span class="font-bold text-slate-900 text-sm">USUARIOS & ORGANIZACIONES</span>
+            <p class="text-slate-600">Almacena credenciales encriptadas con bcrypt, roles (admin, voluntario, beneficiario, organizacion), datos de contacto y estado de verificación.</p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+            <span class="font-bold text-slate-900 text-sm">EVENTOS & POSTULACIONES</span>
+            <p class="text-slate-600">Gestiona jornadas solidarias, fechas, cupos máximos, vacantes de voluntarios/beneficiarios y control de inscripciones con triggers de actualización de cupos.</p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+            <span class="font-bold text-slate-900 text-sm">DONACIONES & DETALLES</span>
+            <p class="text-slate-600">Estructura polimórfica que separa donaciones monetarias (monto, pasarela, referencia) y en especie (categoría, descripción, cantidad física).</p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+            <span class="font-bold text-slate-900 text-sm">SOLICITUDES_AYUDA & AUDITORIA</span>
+            <p class="text-slate-600">Peticiones de asistencia con nivel de urgencia, estado de revisión, entrega y tabla de auditoría para registro de acciones administrativas.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 6: BACKEND Y SUB-CARPETAS -->
+      <section id="backend" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+          <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">6</div>
+          <div>
+            <h3 class="text-2xl font-bold text-slate-900">Estructura del Directorio /backend</h3>
+            <p class="text-xs text-slate-500">API RESTful en TypeScript con Express</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 text-slate-200 p-5 rounded-2xl font-mono text-xs overflow-x-auto">
+<pre class="text-slate-300"><span class="text-emerald-400 font-bold">/backend/src</span>
+├── <span class="text-amber-400">server.ts</span>                  <span class="text-slate-500"># Punto de arranque: inicia servidor HTTP en puerto 5000</span>
+├── <span class="text-amber-400">app.ts</span>                     <span class="text-slate-500"># Configuración de Express, middlewares globales (cors, json, logger) y prefijo /api</span>
+├── <span class="text-emerald-300 font-bold">config/</span>                    <span class="text-slate-500"># Variables de entorno y conexión a base de datos</span>
+│   ├── <span class="text-slate-300">database.ts</span>            <span class="text-slate-500"># Pool MySQL (mysql2/promise) con fallback a memoria</span>
+│   └── <span class="text-slate-300">jwt.ts</span>                 <span class="text-slate-500"># Claves secretas y tiempo de expiración de tokens</span>
+├── <span class="text-emerald-300 font-bold">controllers/</span>               <span class="text-slate-500"># Lógica de negocio y respuesta HTTP (req, res)</span>
+│   ├── <span class="text-slate-300">userController.ts</span>      <span class="text-slate-500"># Registro, Login, Perfil, Recuperación de contraseña</span>
+│   ├── <span class="text-slate-300">eventController.ts</span>     <span class="text-slate-500"># CRUD de Eventos, inscripción y cancelación de participantes</span>
+│   ├── <span class="text-slate-300">donationController.ts</span>  <span class="text-slate-500"># Registro de donaciones monetarias y en especie</span>
+│   ├── <span class="text-slate-300">requestController.ts</span>   <span class="text-slate-500"># Solicitudes de ayuda de beneficiarios</span>
+│   ├── <span class="text-slate-300">verificationController.ts</span> <span class="text-slate-500"># Aprobación de organizaciones por administradores</span>
+│   └── <span class="text-slate-300">auditController.ts</span>     <span class="text-slate-500"># Consulta de logs de auditoría</span>
+├── <span class="text-emerald-300 font-bold">models/</span>                    <span class="text-slate-500"># Capa de Acceso a Datos (Consultas SQL parametrizadas)</span>
+│   ├── <span class="text-slate-300">usuarioModel.ts</span>        <span class="text-slate-500"># Queries SQL para usuarios</span>
+│   ├── <span class="text-slate-300">eventoModel.ts</span>         <span class="text-slate-500"># Queries SQL para eventos e inscripciones</span>
+│   ├── <span class="text-slate-300">donacionModel.ts</span>       <span class="text-slate-500"># Queries SQL para donaciones monetarias y físicas</span>
+│   └── <span class="text-slate-300">solicitudModel.ts</span>      <span class="text-slate-500"># Queries SQL para solicitudes de beneficiarios</span>
+├── <span class="text-emerald-300 font-bold">routes/</span>                    <span class="text-slate-500"># Definición de endpoints y asociación con middlewares</span>
+│   ├── <span class="text-slate-300">userRoutes.ts</span>          <span class="text-slate-500"># /api/users</span>
+│   ├── <span class="text-slate-300">eventRoutes.ts</span>         <span class="text-slate-500"># /api/events</span>
+│   ├── <span class="text-slate-300">donationRoutes.ts</span>      <span class="text-slate-500"># /api/donations</span>
+│   └── <span class="text-slate-300">requestRoutes.ts</span>       <span class="text-slate-500"># /api/requests</span>
+├── <span class="text-emerald-300 font-bold">middlewares/</span>               <span class="text-slate-500"># Interceptores de peticiones</span>
+│   ├── <span class="text-slate-300">authMiddleware.ts</span>      <span class="text-slate-500"># Valida autenticación con JWT</span>
+│   └── <span class="text-slate-300">roleMiddleware.ts</span>      <span class="text-slate-500"># Valida permisos por rol (RBAC)</span>
+└── <span class="text-emerald-300 font-bold">validators/</span>                <span class="text-slate-500"># Validación de entradas con express-validator</span></pre>
+        </div>
+
+        <h4 class="font-bold text-slate-800 text-base">Ejemplo de Código Explicado: Controlador de Eventos</h4>
+        <div class="p-4 bg-slate-900 text-slate-200 rounded-2xl text-xs font-mono space-y-2">
+          <p class="text-slate-400">// Inscribe a un usuario autenticado a una jornada comunitaria</p>
+          <pre class="text-emerald-300"><code>async registerParticipant(req: Request, res: Response) {
+  const eventId = parseInt(req.params.id.replace('evt_', ''), 10);
+  const userId = (req as AuthenticatedRequest).user?.id; // Extraído de forma segura del JWT
+
+  const ok = await EventoModel.registerParticipant(eventId, userId);
+  if (!ok) {
+    return res.status(400).json({ success: false, message: 'No hay cupos o ya estás inscrito.' });
+  }
+
+  return res.json({ success: true, message: '¡Inscripción confirmada exitosamente!' });
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 7: FRONTEND WEB -->
+      <section id="frontend-web" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+          <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">7</div>
+          <div>
+            <h3 class="text-2xl font-bold text-slate-900">Estructura del Directorio /frontend_web</h3>
+            <p class="text-xs text-slate-500">Panel de Control Web para Organizaciones, Voluntarios y Administradores</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 text-slate-200 p-5 rounded-2xl font-mono text-xs overflow-x-auto">
+<pre class="text-slate-300"><span class="text-blue-400 font-bold">/frontend_web/src</span>
+├── <span class="text-amber-400">main.tsx</span>                   <span class="text-slate-500"># Montaje de React DOM, AuthProvider y ThemeProvider</span>
+├── <span class="text-amber-400">App.tsx</span>                    <span class="text-slate-500"># Enrutador principal de la app (BrowserRouter)</span>
+├── <span class="text-blue-300 font-bold">components/</span>                <span class="text-slate-500"># Componentes UI reutilizables</span>
+│   ├── <span class="text-slate-300">Navbar.tsx</span>             <span class="text-slate-500"># Barra superior con selector de rol y navegación</span>
+│   ├── <span class="text-slate-300">Footer.tsx</span>             <span class="text-slate-500"># Pie de página institucional</span>
+│   ├── <span class="text-slate-300">EventCard.tsx</span>          <span class="text-slate-500"># Tarjeta visual de jornadas comunitarias</span>
+│   └── <span class="text-slate-300">DonationModal.tsx</span>      <span class="text-slate-500"># Ventana modal para procesar donaciones</span>
+├── <span class="text-blue-300 font-bold">contexts/</span>                  <span class="text-slate-500"># Estado Global con React Context API</span>
+│   └── <span class="text-slate-300">AuthContext.tsx</span>        <span class="text-slate-500"># Sesión de usuario, token JWT, login/logout</span>
+├── <span class="text-blue-300 font-bold">pages/</span>                     <span class="text-slate-500"># Vistas de la aplicación</span>
+│   ├── <span class="text-slate-300">Home.tsx</span>               <span class="text-slate-500"># Portada con estadísticas e impacto</span>
+│   ├── <span class="text-slate-300">Events.tsx</span>             <span class="text-slate-500"># Explorador de convocatorias con filtros por categoría</span>
+│   ├── <span class="text-slate-300">Donations.tsx</span>          <span class="text-slate-500"># Listado de donaciones y botón para donar</span>
+│   ├── <span class="text-slate-300">AdminDashboard.tsx</span>     <span class="text-slate-500"># Panel de administración, auditoría y verificación</span>
+│   └── <span class="text-slate-300">Auth.tsx</span>               <span class="text-slate-500"># Inicio de sesión y registro por roles</span>
+└── <span class="text-blue-300 font-bold">services/</span>                  <span class="text-slate-500"># Cliente Axios y llamadas HTTP a la API</span>
+    └── <span class="text-slate-300">api.ts</span>                 <span class="text-slate-500"># Interceptores y endpoints</span></pre>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 8: FRONTEND MOBILE -->
+      <section id="frontend-mobile" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+          <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">8</div>
+          <div>
+            <h3 class="text-2xl font-bold text-slate-900">Estructura del Directorio /frontend_mobile</h3>
+            <p class="text-xs text-slate-500">Aplicación Móvil React Native (Expo) con arquitectura Clean Feature-Driven</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 text-slate-200 p-5 rounded-2xl font-mono text-xs overflow-x-auto">
+<pre class="text-slate-300"><span class="text-indigo-400 font-bold">/frontend_mobile/src</span>
+├── <span class="text-indigo-300 font-bold">features/</span>                  <span class="text-slate-500"># Módulos encapsulados por dominio de negocio</span>
+│   ├── <span class="text-slate-300 font-bold">auth/</span>                  <span class="text-slate-500"># Login, Registro (Voluntarios y Beneficiarios), Recuperar Contraseña</span>
+│   │   ├── <span class="text-slate-400">controllers/</span>       <span class="text-slate-500"># useLoginController, useRegisterController</span>
+│   │   ├── <span class="text-slate-400">views/</span>             <span class="text-slate-500"># LoginView, RegisterVolunteerView, RegisterBeneficiaryView</span>
+│   │   └── <span class="text-slate-400">services/</span>          <span class="text-slate-500"># auth.service.ts</span>
+│   ├── <span class="text-slate-300 font-bold">events/</span>                <span class="text-slate-500"># Módulo de Convocatorias y Jornadas Solidarias</span>
+│   │   ├── <span class="text-slate-400">views/</span>             <span class="text-slate-500"># EventsListView, EventDetailView, CreateEventView</span>
+│   │   ├── <span class="text-slate-400">components/</span>        <span class="text-slate-500"># EventItemCard con iconos vectoriales</span>
+│   │   └── <span class="text-slate-400">services/</span>          <span class="text-slate-500"># event.service.ts (con normalización de datos)</span>
+│   ├── <span class="text-slate-300 font-bold">donations/</span>             <span class="text-slate-500"># Módulo de Donaciones (Monetarias y en Especie)</span>
+│   │   ├── <span class="text-slate-400">views/</span>             <span class="text-slate-500"># DonationsListView, CreateDonationView</span>
+│   │   └── <span class="text-slate-400">services/</span>          <span class="text-slate-500"># donation.service.ts</span>
+│   ├── <span class="text-slate-300 font-bold">beneficiary/</span>           <span class="text-slate-500"># Solicitudes de Asistencia para Beneficiarios</span>
+│   │   ├── <span class="text-slate-400">views/</span>             <span class="text-slate-500"># BeneficiaryRequestsView, CreateRequestView</span>
+│   │   └── <span class="text-slate-400">services/</span>          <span class="text-slate-500"># beneficiary.service.ts</span>
+│   └── <span class="text-slate-300 font-bold">profile/</span>               <span class="text-slate-500"># Perfil de Usuario y Edición de Datos</span>
+├── <span class="text-indigo-300 font-bold">navigation/</span>                <span class="text-slate-500"># React Navigation v6</span>
+│   ├── <span class="text-slate-300">AppNavigator.tsx</span>       <span class="text-slate-500"># Stack condicional (AuthStack vs MainStack)</span>
+│   └── <span class="text-slate-300">BottomTabNavigator.tsx</span> <span class="text-slate-500"># Barra inferior con Lucide Icons y pestañas según rol</span>
+└── <span class="text-indigo-300 font-bold">shared/</span>                    <span class="text-slate-500"># Componentes comunes (AppButton, AppInput, AppLoader)</span></pre>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 9: CASO REAL PASO A PASO: PROCESO DE UNA DONACIÓN (CON ZOOM) -->
+      <section id="caso-donacion" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+          <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center font-bold">9</div>
+          <div>
+            <h3 class="text-2xl font-bold text-slate-900">Caso Real: ¿Qué pasa cuando se realiza una Donación? (Con Zoom)</h3>
+            <p class="text-xs text-slate-500">Seguimiento línea por línea y visual desde el clic hasta la persistencia en MySQL</p>
+          </div>
+        </div>
+
+        <!-- VISOR DE DIAGRAMA INTERACTIVO CON ZOOM 2 -->
+        <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4 shadow-inner space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-800 text-white">
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-400 flex items-center">
+              <span class="w-2 h-2 rounded-full bg-rose-500 mr-2 animate-pulse"></span> Diagrama 2: Secuencia Detallada de Donación
+            </span>
+            <div class="flex items-center space-x-1">
+              <button onclick="zoomIn('diagram2')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-bold border border-slate-700 flex items-center">
+                🔍 + Zoom In
+              </button>
+              <button onclick="zoomOut('diagram2')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-bold border border-slate-700 flex items-center">
+                🔍 - Zoom Out
+              </button>
+              <button onclick="resetZoom('diagram2')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-bold border border-slate-700 flex items-center">
+                ↺ Reset
+              </button>
+            </div>
+          </div>
+
+          <div id="container-diagram2" class="diagram-container bg-slate-950/60 rounded-xl p-4 flex items-center justify-center">
+            <div id="viewport-diagram2" class="diagram-viewport">
+              <div class="mermaid text-center">
+sequenceDiagram
+    autonumber
+    actor Donante as 👤 Donante (Web o Móvil)
+    participant UI as 📱 Vista (CreateDonationView)
+    participant Service as ⚡ Service (donation.service)
+    participant Route as 🔀 Router (/api/donations)
+    participant Middleware as 🔒 Auth y Validator
+    participant Controller as ⚙️ Controller (donationController)
+    participant Model as 📦 Model (donacionModel)
+    participant DB as 🗄️ MySQL (giveandgo_db)
+
+    Donante->>UI: Ingresa $50.000 COP y presiona Donar
+    UI->>Service: create(tipo_donacion: monetaria, monto: 50000)
+    Service->>Route: POST /api/donations con Bearer JWT
+    Route->>Middleware: verifyToken y validateDonation
+    Middleware->>Controller: donationController.create(req, res)
+    Controller->>Model: DonacionModel.create(datos + usuario_id)
+    Model->>DB: START TRANSACTION y ejecuta INSERT en DONACIONES
+    DB-->>Model: Retorna id_donacion generado (ej. 42)
+    Model->>DB: INSERT en DONACIONES_MONETARIAS
+    DB-->>Model: COMMIT y confirmacion de insercion
+    Model-->>Controller: Retorna objeto Donacion con fecha y folio
+    Controller-->>Service: HTTP 201 Created con respuesta JSON
+    Service-->>UI: Retorna datos normalizados
+    UI-->>Donante: Muestra confirmacion de exito y actualiza lista
+              </div>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 text-center italic">Tip: Usa los controles de Zoom para ampliar la secuencia a cualquier escala.</p>
+        </div>
+
+        <div class="space-y-4 pt-4">
+          <h4 class="font-bold text-slate-800 text-sm">Desglose Detallado del Código en Cada Capa:</h4>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <!-- PASO FRONTEND -->
+            <div class="p-4 bg-slate-900 text-slate-200 rounded-2xl space-y-2">
+              <span class="text-rose-400 font-bold">1. Frontend Mobile (CreateDonationView.tsx)</span>
+              <pre class="text-slate-300"><code>const handleCreate = async () => {
+  await donationFeatureService.create({
+    tipo_donacion: 'monetaria',
+    monto: parseFloat(monto),
+    id_organizacion: 1,
+    anonima: isAnonymous
+  });
+  Alert.alert('Éxito', '¡Donación registrada!');
+  navigation.goBack();
+};</code></pre>
+            </div>
+
+            <!-- PASO CONTROLLER -->
+            <div class="p-4 bg-slate-900 text-slate-200 rounded-2xl space-y-2">
+              <span class="text-emerald-400 font-bold">2. Backend Controller (donationController.ts)</span>
+              <pre class="text-slate-300"><code>async create(req: Request, res: Response) {
+  const { tipo, monetary, objectDetail, anonima } = req.body;
+  const userId = (req as AuthenticatedRequest).user?.id;
+
+  const donacionId = await DonacionModel.create({
+    usuario_id: userId,
+    tipo,
+    anonima,
+    monetary,
+    objectDetail
+  });
+  return res.status(201).json({ success: true, id: donacionId });
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 10: SEGURIDAD Y RBAC -->
+      <section id="seguridad-auth" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-4">
+          <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold">10</div>
+          <div>
+            <h3 class="text-2xl font-bold text-slate-900">Seguridad, Autenticación y Matriz RBAC</h3>
+            <p class="text-xs text-slate-500">Control de Acceso Basado en Roles</p>
+          </div>
+        </div>
+
+        <p class="text-slate-600 text-sm leading-relaxed">
+          Cada petición a endpoints protegidos pasa por el middleware <code>authMiddleware.ts</code> que decodifica el JWT con <code>jsonwebtoken</code>. El middleware <code>roleMiddleware.ts</code> valida si el rol del usuario posee los privilegios necesarios:
+        </p>
+
+        <!-- TABLA DE PERMISOS -->
+        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+          <table class="w-full text-xs text-left">
+            <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider">
+              <tr>
+                <th class="p-3">Módulo / Acción</th>
+                <th class="p-3 text-center">Admin</th>
+                <th class="p-3 text-center">Organización</th>
+                <th class="p-3 text-center">Voluntario</th>
+                <th class="p-3 text-center">Beneficiario</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 font-medium text-slate-600">
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-semibold text-slate-900">Crear y Publicar Jornadas</td>
+                <td class="p-3 text-center text-emerald-600 font-bold">✓ Total</td>
+                <td class="p-3 text-center text-emerald-600 font-bold">✓ Propias</td>
+                <td class="p-3 text-center text-slate-300">✕</td>
+                <td class="p-3 text-center text-slate-300">✕</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-semibold text-slate-900">Inscribirse a Jornadas</td>
+                <td class="p-3 text-center text-slate-300">✕</td>
+                <td class="p-3 text-center text-slate-300">✕</td>
+                <td class="p-3 text-center text-emerald-600 font-bold">✓ Voluntario</td>
+                <td class="p-3 text-center text-emerald-600 font-bold">✓ Asistencia</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-semibold text-slate-900">Realizar Donaciones</td>
+                <td class="p-3 text-center text-emerald-600 font-bold">✓</td>
+                <td class="p-3 text-center text-emerald-600 font-bold">✓</td>
+                <td class="p-3 text-center text-emerald-600 font-bold">✓</td>
+                <td class="p-3 text-center text-emerald-600 font-bold">✓</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-semibold text-slate-900">Crear Solicitudes de Ayuda</td>
+                <td class="p-3 text-center text-slate-300">✕</td>
+                <td class="p-3 text-center text-slate-300">✕</td>
+                <td class="p-3 text-center text-slate-300">✕</td>
+                <td class="p-3 text-center text-emerald-600 font-bold">✓ Exclusivo</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-semibold text-slate-900">Verificar Organizaciones & Auditoría</td>
+                <td class="p-3 text-center text-emerald-600 font-bold">✓ Exclusivo</td>
+                <td class="p-3 text-center text-slate-300">✕</td>
+                <td class="p-3 text-center text-slate-300">✕</td>
+                <td class="p-3 text-center text-slate-300">✕</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- FOOTER DEL DOCUMENTO -->
+      <footer class="text-center text-xs text-slate-400 py-8 border-t border-slate-200">
+        <p>Give&Go © 2026 - Documento Técnico de Arquitectura de Software y Guía Operativa.</p>
+        <p class="mt-1">Generado para soporte de desarrollo, despliegue y auditoría de código fuente.</p>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- SCRIPT DE PANZOOM INTERACTIVO PARA DIAGRAMAS -->
+  <script>
+    const panzoomInstances = {};
+
+    window.addEventListener('load', () => {
+      // Inicializar Panzoom en diagram1
+      const elem1 = document.getElementById('viewport-diagram1');
+      if (elem1 && window.Panzoom) {
+        panzoomInstances['diagram1'] = Panzoom(elem1, {
+          maxScale: 4,
+          minScale: 0.5,
+          contain: 'outside',
+          cursor: 'grab'
+        });
+        elem1.parentElement.addEventListener('wheel', panzoomInstances['diagram1'].zoomWithWheel);
+      }
+
+      // Inicializar Panzoom en diagram2
+      const elem2 = document.getElementById('viewport-diagram2');
+      if (elem2 && window.Panzoom) {
+        panzoomInstances['diagram2'] = Panzoom(elem2, {
+          maxScale: 4,
+          minScale: 0.5,
+          contain: 'outside',
+          cursor: 'grab'
+        });
+        elem2.parentElement.addEventListener('wheel', panzoomInstances['diagram2'].zoomWithWheel);
+      }
+    });
+
+    function zoomIn(id) {
+      if (panzoomInstances[id]) {
+        panzoomInstances[id].zoomIn();
+      }
+    }
+
+    function zoomOut(id) {
+      if (panzoomInstances[id]) {
+        panzoomInstances[id].zoomOut();
+      }
+    }
+
+    function resetZoom(id) {
+      if (panzoomInstances[id]) {
+        panzoomInstances[id].reset();
+      }
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+</html>

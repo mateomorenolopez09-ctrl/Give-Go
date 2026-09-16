@@ -1,0 +1,11 @@
+{
+  "name": "giveandgo",
+  "description": "Give&Go - Plataforma Comunitaria de Voluntariado y Donaciones",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
