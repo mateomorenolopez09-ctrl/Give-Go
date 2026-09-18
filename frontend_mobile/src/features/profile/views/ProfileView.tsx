@@ -64,7 +64,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ navigation }) => {
           <AppButton
             title="Editar Información de Perfil"
             variant="outline"
-            onPress={navigateToEdit}
+            onPress={navigateToEdit} //punto de disparo
           />
         </View>
 

@@ -15,7 +15,7 @@ import { EditEventView } from '../features/events/views/EditEventView';
 import { CreateDonationView } from '../features/donations/views/CreateDonationView';
 import { CreateRequestView } from '../features/beneficiary/views/CreateRequestView';
 import { EditProfileView } from '../features/profile/views/EditProfileView';
-
+// Conecta con EditProfileView
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigator = () => {
@@ -43,7 +43,7 @@ export const AppNavigator = () => {
             <Stack.Screen name="EditEvent" component={EditEventView} />
             <Stack.Screen name="CreateDonation" component={CreateDonationView} />
             <Stack.Screen name="CreateRequest" component={CreateRequestView} />
-            <Stack.Screen name="EditProfile" component={EditProfileView} />
+            <Stack.Screen name="EditProfile" component={EditProfileView} />//Se registra la pantalla destino 
           </Stack.Group>
         )}
       </Stack.Navigator>

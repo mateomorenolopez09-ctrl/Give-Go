@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { editProfileStyles } from '../styles/editProfile.styles';
 import { AppInput } from '../../../shared/components/inputs/AppInput';
 import { AppButton } from '../../../shared/components/buttons/AppButton';
-import { useEditProfileController } from '../controllers/useEditProfileController';
+import { useEditProfileController } from '../controllers/useEditProfileController';//Conecta con useEditPorfileController
 
 interface EditProfileViewProps {
   route: any;
@@ -32,6 +32,7 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({ route, navigat
     handleSave,
     goBack,
   } = useEditProfileController(navigation, profile);
+  //Inicializa el controlador con el perfil recibido
 
   return (
     <SafeAreaView style={editProfileStyles.container}>
@@ -97,18 +98,18 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({ route, navigat
               />
             </View>
           </View>
-
+       {/* Boton guardar cambios*/} 
           <AppButton
             title="Guardar Cambios"
-            onPress={handleSave}
+            onPress={handleSave}//Dispara el guardar
             isLoading={isLoading}
             style={editProfileStyles.submitButton}
           />
-
+        {/*Boton cancelar*/}
           <AppButton
             title="Cancelar"
             variant="ghost"
-            onPress={goBack}
+            onPress={goBack} //Regresa a profileView
             style={editProfileStyles.cancelButton}
           />
         </View>

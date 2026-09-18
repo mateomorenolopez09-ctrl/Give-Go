@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { profileFeatureService } from '../services/profile.service';
+import { profileFeatureService } from '../services/profile.service';// Conecta con el servicio
 import { useAuth } from '../../../store/auth/AuthContext';
 
 export const useEditProfileController = (navigation: any, initialProfile: any) => {
@@ -25,8 +25,10 @@ export const useEditProfileController = (navigation: any, initialProfile: any) =
         barrio,
         localidad,
       });
-      updateUser(updated);
-      navigation.goBack();
+      // Hace peticion HTTP al bak para poder hacer la actualizacion 
+      
+      updateUser(updated);//Actualiza el AuthContext que guarda la info de secion del user
+      navigation.goBack();// Regresa a PerofileView
     } catch (e) {
       console.warn('Error al actualizar perfil:', e);
     } finally {

@@ -15,7 +15,7 @@ import { UserProfile } from '../models/profile.models';
 
 export const useProfileController = (navigation: any) => {
   
-  // Esta linea obtiene user y logout desde AuthContext.tsx
+  // Aqui obtiene user y logout desde AuthContext.tsx
   const { user, logout, updateUser } = useAuth();
   
   const [profile, setProfile] = useState<UserProfile | null>(user as UserProfile);
@@ -27,7 +27,7 @@ export const useProfileController = (navigation: any) => {
       setIsLoading(true);
       
       
-      // Esta linea pasa el flujo a profile.service.ts
+      // Aqui pasa el flujo a profile.service.ts
       const data = await profileFeatureService.getProfile();
       
       if (data) {
@@ -46,7 +46,7 @@ export const useProfileController = (navigation: any) => {
   }, []);
 
   // Navegacion a pantalla de edicion
-  // Esta linea pasa profile a EditProfileScreen
+  // Pasa profile que en ese momento inicio secion a EditProfileScreen
   const navigateToEdit = () => {
     navigation.navigate('EditProfile', { profile });
   };
